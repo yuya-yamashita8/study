@@ -3,7 +3,7 @@
     <!-- 検索のタイトル -->
 
     <!-- 検索フォーム。GETメソッドで、商品一覧のルートにデータを送信 -->
-    <form action="{{ route('products.index') }}" method="GET" class="row g-3">
+    <form action="{{ route('index') }}" method="GET" class="row g-3">
 
         <!-- 商品名検索用の入力欄 -->
         <div class="col-sm-12 col-md-3">

@@ -4,9 +4,9 @@
 <div class="container">
     <h1 class="mb-4">商品新規登録画面</h1>
 
-    <a href="{{ route('products.index') }}" class="btn btn-primary mb-3">戻る</a>
+    <a href="{{ route('index') }}" class="btn btn-primary mb-3">戻る</a>
 
-    <form method="POST" action="{{ route('products.store') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('store') }}" enctype="multipart/form-data">
 
         @csrf
 

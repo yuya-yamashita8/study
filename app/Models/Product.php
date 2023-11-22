@@ -45,19 +45,19 @@ class Product extends Model
 
     public function create() {
         $companies = DB::table('companies')->create();
-        return view('products.create', ['companies' => $companies]);
+        return view('product.create', ['companies' => $companies]);
     }
 
     //新規商品登録画面の保存
-    public function store($data)
+    public function store($data,$image_path)
     {
-        $this->product_name = $data('product_name');
-        $this->price = $data('price');
-        $this->stock = $data('stock');
-        $this->company_id = $data('company_id');
-        $this->comment =$data('comment');
+        $this->product_name = $data['product_name'];
+        $this->price = $data['price'];
+        $this->stock = $data['stock'];
+        $this->company_id = $data['company_id'];
+        $this->comment =$data['comment'];
 
-        if($data->hasFile('img_path')){
+        if($image_path){
         $filename = $data->img_path->getClientOriginalName();
         $filePath = $data->img_path->storeAs('products', $filename, 'public');
         $data->img_path = '/storage/' . $filePath;
@@ -69,7 +69,7 @@ class Product extends Model
     public function show($id)
     {
         $product = DB::table('products')->create();
-        return view('products.show', ['product' => $product]);
+        return view('product.show', ['product' => $product]);
     }
 
 
@@ -83,18 +83,21 @@ class Product extends Model
         return $products;
     }
 
-    public function updateData(ProductRequest $request, $id, $data)
-    {
-    DB::table('products')->insert([
-            'product_name' => $data->'メーカー名',
-            'company_id' => $data->'ID',
-            'price' => $data->'価格',
-            'stock' => $data->'在庫数',
-            'comment' => $data->'コメント',
-            'img_path' => $data->'商品画像',
+    //データを渡すときはその順番を意識！
+    public function updateData($id, $data, $image_path)
+    {//インサートは新規登録の処理　whereはどのレコードをupdate（更新）してやるか！　
+    DB::table('products')->where('id','=',$id)->update([
+            'product_name' => $data->product_name,
+            'company_id' => $data->company_id,
+            'price' => $data->price,
+            'stock' => $data->stock,
+            'comment' => $data->comment,
+            'img_path' => $image_path,
         ]);
-        $products->save();
     }
+//素のSQLに近いのがクエリビルダ
+//【'id','=',$id 】のように = でやると一致するもの
+//=>〇〇はbladeのnameを持ってくる。
 
     //削除処理
     public function deleteProduct($id)

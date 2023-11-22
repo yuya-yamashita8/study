@@ -24,8 +24,11 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/index', [App\Http\Controllers\ProductController::class, 'index'])->name('index');
 Route::get('/create', [App\Http\Controllers\ProductController::class, 'create'])->name('create');
 Route::get('/store', [App\Http\Controllers\ProductController::class, 'store'])->name('store');
+Route::post('/store', [App\Http\Controllers\ProductController::class, 'store'])->name('store');
 Route::get('/show', [App\Http\Controllers\ProductController::class, 'show'])->name('show');
 Route::get('/edit', [App\Http\Controllers\ProductController::class, 'edit'])->name('edit');
+Route::get('/show{id}', [App\Http\Controllers\ProductController::class, 'show'])->name('show');
+Route::get('/edit{id}', [App\Http\Controllers\ProductController::class, 'edit'])->name('edit');
 Route::get('/update', [App\Http\Controllers\ProductController::class, 'update'])->name('update');
 Route::get('/destroy', [App\Http\Controllers\ProductController::class, 'destroy'])->name('destroy');
 Route::post('/destroy{id}', [App\Http\Controllers\ProductController::class, 'destroy'])->name('destroy');

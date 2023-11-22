@@ -9,7 +9,7 @@
                     <div class="card-header"><h2>更新</h2></div>
 
                     <div class="card-body">
-                        <form method="POST" action="{{ route('products.update', $product) }}" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('update', $product) }}" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
 

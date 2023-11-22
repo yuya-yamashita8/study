@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Company;
 use App\Models\Sale;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -40,21 +41,21 @@ class ProductController extends Controller
     {
         {
             $data = $request -> all();
-            $product = new Product();
-            $product->store($data);
+            $image_path = $request->file('image_path');
+            //$product = new Product();
+            //$product->store($data,$image_path);
 
             DB::beginTransaction();
 
         try {
             // 登録処理呼び出し
-            $$product_model = new Product();
-            $$product_model->store($request);
+            $product_model = new Product();
+            $product_model->store($data,$image_path);
             DB::commit();
+            return redirect()->route('index');
         } catch (\Exception $e) {
-            DB::rollback();
-            return back();
+            return redirect()->route('index');
         }
-        return redirect(route('products.create'));
     }
     }
 

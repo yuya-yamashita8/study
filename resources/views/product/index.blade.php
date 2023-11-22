@@ -5,7 +5,7 @@
     <h1 class="mb-4">商品一覧画面</h1>
 
 <div class="search mt-5">
-    <form action="{{ route('products.index') }}" method="GET" class="row g-3">
+    <form action="{{ route('index') }}" method="GET" class="row g-3">
 
 <!-- 商品名検索用の入力欄 -->
 <div class="col-sm-12 col-md-3">
@@ -26,7 +26,7 @@
     <input type="submit" value="検索">
 </form>
 
-    <a href="{{ route('products.create') }}" class="btn btn-primary mb-3">新規登録</a>
+    <a href="{{ route('create') }}" class="btn btn-primary mb-3">新規登録</a>
 
     <div class="products mt-5">
         <h2>商品情報</h2>
@@ -51,8 +51,8 @@
             <td>{{ $product->stock }}</td>
             <td>{{ $product->company->company_name }}</td>
 <td>
-                        <a href="{{ route('products.show', $product) }}" class="btn btn-info btn-sm mx-1">詳細</a>
-                        <form method="POST" action="{{ route('products.destroy', $product) }}" class="d-inline">
+                        <a href="{{ route('show', $product) }}" class="btn btn-info btn-sm mx-1">詳細</a>
+                        <form method="POST" action="{{ route('destroy', $product) }}" class="d-inline">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm mx-1">削除</button>
