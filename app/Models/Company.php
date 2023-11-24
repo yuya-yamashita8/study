@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class Company extends Model
 {
-    use HasFactory;
+    //use HasFactory;
 
     public function index()
     {//::コロンはDBファイルの中の（）の機能を使うって意味

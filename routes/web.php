@@ -26,13 +26,15 @@ Route::get('/create', [App\Http\Controllers\ProductController::class, 'create'])
 Route::get('/store', [App\Http\Controllers\ProductController::class, 'store'])->name('store');
 Route::post('/store', [App\Http\Controllers\ProductController::class, 'store'])->name('store');
 Route::get('/show', [App\Http\Controllers\ProductController::class, 'show'])->name('show');
-Route::get('/edit', [App\Http\Controllers\ProductController::class, 'edit'])->name('edit');
+Route::get('/edit{id}', [App\Http\Controllers\ProductController::class, 'edit'])->name('product.edit');
 Route::get('/show{id}', [App\Http\Controllers\ProductController::class, 'show'])->name('show');
-Route::get('/edit{id}', [App\Http\Controllers\ProductController::class, 'edit'])->name('edit');
-Route::get('/update', [App\Http\Controllers\ProductController::class, 'update'])->name('update');
+Route::post('/edit{id}', [App\Http\Controllers\ProductController::class, 'edit'])->name('edit');
+Route::post('/update{id}', [App\Http\Controllers\ProductController::class, 'update'])->name('update');
 Route::get('/destroy', [App\Http\Controllers\ProductController::class, 'destroy'])->name('destroy');
-Route::post('/destroy{id}', [App\Http\Controllers\ProductController::class, 'destroy'])->name('destroy');
+Route::delete('/destroy{id}', [App\Http\Controllers\ProductController::class, 'destroy'])->name('destroy');
 
 //Route::get('/regist',[App\Http\Controllers\ProductController::class, 'showRegistForm'])->name('regist')
 //Route::post('/regist',[App\Http\Controllers\ProductController::class, 'registSubmit'])->name('submit');
 //Route::get('/serch',[App\Http\Controllers\ProductController::class, 'serch'])->name('serch');
+
+//route

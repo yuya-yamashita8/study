@@ -11,6 +11,6 @@ class ProductsTableSeeder extends Seeder
     public function run()
     {
         //Productモデルのファクトリーを使ってダミーレコードを10件作成
-        Product::factory()->count(10)->create();
+        //Product::factory()->count(10)->create();
     }
 }

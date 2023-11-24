@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class Sale extends Model
 {
-    use HasFactory;
+    //use HasFactory;
 
      // Saleモデルがproductテーブルとリレーション関係を結ぶためのメソッド
     public function product()

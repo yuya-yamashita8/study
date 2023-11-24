@@ -14,7 +14,7 @@
         <dd class="col-sm-9">{{ $product->product_name }}</dd>
 
         <dt class="col-sm-3">メーカー</dt>
-        <dd class="col-sm-9">{{ $product->company->name }}</dd>
+        <dd class="col-sm-9">{{ $product->company_name }}</dd>
 
         <dt class="col-sm-3">価格</dt>
         <dd class="col-sm-9">{{ $product->price }}</dd>
@@ -28,7 +28,7 @@
         <dt class="col-sm-3">商品画像</dt>
         <dd class="col-sm-9"><img src="{{ asset($product->img_path) }}" width="300"></dd>
     </dl>
-    <a href="{{ route('edit', $product) }}" class="btn btn-primary btn-sm mx-1">編集</a>
+    <a href="{{ route('product.edit', $product->id) }}" class="btn btn-primary btn-sm mx-1">編集</a>
 
 </div>
 @endsection

@@ -4,14 +4,13 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <a href="{{ route('products.index') }}" class="btn btn-primary mt-1 mb-3">商品一覧画面に戻る</a>
+                <a href="{{ route('index') }}" class="btn btn-primary mt-1 mb-3">商品一覧画面に戻る</a>
                 <div class="card">
                     <div class="card-header"><h2>更新</h2></div>
 
                     <div class="card-body">
-                        <form method="POST" action="{{ route('update', $product) }}" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('update', $product->id) }}" enctype="multipart/form-data">
                             @csrf
-                            @method('PUT')
 
                             <div class="mb-3">
                                 <label for="product_name" class="form-label">商品名</label>

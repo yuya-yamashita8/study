@@ -8,9 +8,10 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ProductRequest;
 use App\Http\Requests\Request;
 
+
 class Product extends Model
 {
-    use HasFactory;
+    //use HasFactory;
 
     protected $fillable = [
         'product_name',
@@ -21,17 +22,20 @@ class Product extends Model
         'img_path',
     ];
 
+
     // Productモデルがsalesテーブルとリレーション関係を結ぶためのメソッド
     public function sales()
     {
         return $this->hasMany(Sale::class);
     }
 
+
     // Productモデルがcompaniesテーブルとリレーション関係を結ぶ為のメソッドです
     public function company()
     {
         return $this->belongsTo(Company::class);
     }
+
 
     public function index()
     {
@@ -42,6 +46,7 @@ class Product extends Model
         ->paginate (5);
         return $products;
     }
+
 
     public function create() {
         $companies = DB::table('companies')->create();
@@ -56,7 +61,6 @@ class Product extends Model
         $this->stock = $data['stock'];
         $this->company_id = $data['company_id'];
         $this->comment =$data['comment'];
-
         if($image_path){
         $filename = $data->img_path->getClientOriginalName();
         $filePath = $data->img_path->storeAs('products', $filename, 'public');
@@ -83,6 +87,7 @@ class Product extends Model
         return $products;
     }
 
+
     //データを渡すときはその順番を意識！
     public function updateData($id, $data, $image_path)
     {//インサートは新規登録の処理　whereはどのレコードをupdate（更新）してやるか！　
@@ -95,13 +100,26 @@ class Product extends Model
             'img_path' => $image_path,
         ]);
     }
-//素のSQLに近いのがクエリビルダ
-//【'id','=',$id 】のように = でやると一致するもの
-//=>〇〇はbladeのnameを持ってくる。
+    //素のSQLに近いのがクエリビルダ
+    //【'id','=',$id 】のように = でやると一致するもの
+    //=>〇〇はbladeのnameを持ってくる。
+
 
     //削除処理
     public function deleteProduct($id)
     {
         return $this->destroy($id);
+    }
+
+    public function  detail($id)
+    {
+         // productsテーブルからデータを取得
+        $products = DB::table('products')
+        ->join('companies','products.company_id','=','companies.id')
+        ->select ('products.*','companies.company_name')
+        ->where('products.id','=',$id)
+        ->first();
+        return $products;
+        //一件はfirst、２件以上はget。
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Company;
 use App\Models\Sale;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\ProductRequest;
 
 class ProductController extends Controller
 {
@@ -51,6 +52,7 @@ class ProductController extends Controller
             // 登録処理呼び出し
             $product_model = new Product();
             $product_model->store($data,$image_path);
+            dd($request);
             DB::commit();
             return redirect()->route('index');
         } catch (\Exception $e) {
@@ -65,7 +67,7 @@ class ProductController extends Controller
     {
         $product_model = new Product();
         $product = $product_model->detail($id);//<-なぜshow($id)じゃないの？
-        return view('products.show', ['product' => $product]);
+        return view('product.show', ['product' => $product]);
     }
 
 
@@ -77,7 +79,7 @@ class ProductController extends Controller
         $product = $product_model->detail($id);//<-なぜedit($id)じゃないの？
         $companies = $company_model->index();
 
-        return view('products.edit', ['product' => $product, 'companies' => $companies]);
+        return view('product.edit', ['product' => $product, 'companies' => $companies]);
     }
 
 
@@ -98,7 +100,7 @@ class ProductController extends Controller
             return back();
         }
 
-        return redirect()->route('products.index')
+        return redirect()->route('product.index')
             ->with('success', 'Product updated successfully');
     }
 
@@ -120,6 +122,6 @@ class ProductController extends Controller
     }
 
     // 処理が完了したらdestroyにリダイレクト
-    return redirect(route('products'));
+    return redirect(route('index'));
 }
 }

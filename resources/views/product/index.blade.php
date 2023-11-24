@@ -49,10 +49,11 @@
             <td>{{ $product->product_name }}</td>
             <td>{{ $product->price }}</td>
             <td>{{ $product->stock }}</td>
-            <td>{{ $product->company->company_name }}</td>
-<td>
-                        <a href="{{ route('show', $product) }}" class="btn btn-info btn-sm mx-1">詳細</a>
-                        <form method="POST" action="{{ route('destroy', $product) }}" class="d-inline">
+            <td>{{ $product->company_name }}</td>
+
+                    <td>
+                    <a href="{{ route('show', $product->id) }}" class="btn btn-info btn-sm mx-1">詳細</a>
+                        <form method="POST" action="{{ route('destroy', $product->id) }}" class="d-inline">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm mx-1">削除</button>
