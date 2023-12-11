@@ -4,27 +4,27 @@
 <div class="container">
     <h1 class="mb-4">商品一覧画面</h1>
 
-<div class="search mt-5">
-    <form action="{{ route('index') }}" method="GET" class="row g-3">
+    <div class="search mt-5">
+        <form action="{{ route('index') }}" method="get" class="row g-3">
+            <!-- 検索フォーム -->
+            <input type="text" name="query" placeholder="会社名を検索" value="{{ $query ?? '' }}">
+            <input type="text" name="keyword" placeholder="キーワードを検索" value="{{ $keyword ?? '' }}">
+            <button type="submit" style="width: 100px;">検索</button>
+        </form>
 
-<!-- 商品名検索用の入力欄 -->
-<div class="col-sm-12 col-md-3">
-    <input type="text" name="search" class="form-control" placeholder="検索キーワード" value="{{ request('search') }}">
+        <!-- 検索結果表示 -->
+        <!-- @if ($companies->count() > 0)
+            <ul>
+                @foreach ($companies as $company)
+                    <li>{{ $company->company_name }}</li>
+                @endforeach
+            </ul>
+        @else
+            <p>該当する結果はありません。</p>
+        @endif -->
+    </div>
 </div>
 
-    </form>
-</div>
-
-@csrf
-    <input type="text" name="company_name" list="example" placeholder="メーカー名">
-        <datalist id="example">
-            <option value="山下商事"></option>
-            <option value="山下ジャパン"></option>
-            <option value="山下クリニック"></option>
-        </datalist>
-
-    <input type="submit" value="検索">
-</form>
 
     <a href="{{ route('create') }}" class="btn btn-primary mb-3">新規登録</a>
 
@@ -45,7 +45,7 @@
     @foreach ($products as $product)
         <tr>
             <td>{{ $product->id }}</td>
-            <td><img src="{{ asset($product->img_path) }}" alt="商品画像" width="100"></td>
+            <td><img src="{{ asset('storage/image/'.$product->img_path) }}" alt="商品画像" width="100"></td>
             <td>{{ $product->product_name }}</td>
             <td>{{ $product->price }}</td>
             <td>{{ $product->stock }}</td>
@@ -67,3 +67,6 @@
     </div>
 
 </div>
+
+
+

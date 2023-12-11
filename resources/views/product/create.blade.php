@@ -43,7 +43,7 @@
 
         <div class="mb-3">
             <label for="img_path" class="form-label">商品画像:</label>
-            <input id="img_path" type="file" name="img_path" class="form-control" required>
+            <input id="img_path" type="file" name="img_path" class="form-control">
         </div>
 
         <button type="submit" class="btn btn-primary">新規登録</button>

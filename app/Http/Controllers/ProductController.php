@@ -8,6 +8,8 @@ use App\Models\Company;
 use App\Models\Sale;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ProductRequest;
+use Illuminate\Support\Facades\Storage;
+
 
 class ProductController extends Controller
 {
@@ -36,30 +38,52 @@ class ProductController extends Controller
         return view('product.create', ['companies' => $companies]);
     }
 
+    public function store(ProductRequest $request) {
+        $data = $request->all();
+        $image_path = $request->file('img_path');
+
+        $product_model = new Product();
+        $product_model->store($data, $image_path);
+        return redirect()->route('index');}
+
 
     //新規商品登録画面の保存
-    public function store(Request $request)
-    {
-        {
-            $data = $request -> all();
-            $image_path = $request->file('image_path');
-            //$product = new Product();
-            //$product->store($data,$image_path);
+    // public function store(ProductRequest $request)
+    // {
+    //         $data = $request -> all();
+    //         $image_path = $request->file('img_path');
+    //         //$product = new Product();
+    //         //$product->store($data,$image_path);
 
-            DB::beginTransaction();
+    //         DB::beginTransaction();
 
-        try {
-            // 登録処理呼び出し
-            $product_model = new Product();
-            $product_model->store($data,$image_path);
-            dd($request);
-            DB::commit();
-            return redirect()->route('index');
-        } catch (\Exception $e) {
-            return redirect()->route('index');
-        }
-    }
-    }
+    //     try {
+    //         // 登録処理呼び出し
+    //         $product_model = new Product();
+    //         $product_model->store($data,$image_path);
+    //         DB::commit();
+    //         return redirect()->route('index');
+    //     } catch (\Exception $e) {
+    //         return redirect()->route('index');
+    //     }
+    // }
+
+    // public function upload(Request $request)
+    // {
+    //     $data = $request -> all();
+    //         $image_path = $request->file('image_path');
+    //         DB::beginTransaction();
+
+    //     try {
+    //         // 登録処理呼び出し
+    //         $product_model = new Product();
+    //         $product_model->storeAs($data, $image_path);;
+    //         DB::commit();
+    //         return redirect()->route('index');
+    //     } catch (\Exception $e) {
+    //         return redirect()->route('index');
+    //     }
+    // }
 
 
     //商品詳細画面
@@ -87,7 +111,7 @@ class ProductController extends Controller
     public function update(ProductRequest $request, $id)
     {
         $data = $request->all();
-        $image_path = $request->file('image_path');
+        $image_path = $request->file('img_path');
         DB:: beginTransaction();
 
         try {
@@ -124,4 +148,21 @@ class ProductController extends Controller
     // 処理が完了したらdestroyにリダイレクト
     return redirect(route('index'));
 }
+
+public function search(Request $request)
+{
+    $query = $request->input('query');
+        $keyword = $request->input('keyword');
+
+        // データベースから検索
+        $companies = Company::when($query, function ($queryBuilder) use ($query) {
+            return $queryBuilder->where('company_name', 'like', '%' . $query . '%');
+        })
+        ->when($keyword, function ($queryBuilder) use ($keyword) {
+            return $queryBuilder->where('description', 'like', '%' . $keyword . '%');
+        })
+        ->get();
+
+        return view('index', ['companies' => $companies, 'query' => $query, 'keyword' => $keyword]);
+    }
 }

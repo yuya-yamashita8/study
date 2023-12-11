@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ProductRequest;
 use App\Http\Requests\Request;
+use Illuminate\Support\Facades\Storage;
+
 
 
 class Product extends Model
@@ -54,20 +56,45 @@ class Product extends Model
     }
 
     //新規商品登録画面の保存
-    public function store($data,$image_path)
-    {
+    public function store($data, $image_path) {
         $this->product_name = $data['product_name'];
         $this->price = $data['price'];
+        $this->comment = $data['comment'];
         $this->stock = $data['stock'];
         $this->company_id = $data['company_id'];
-        $this->comment =$data['comment'];
-        if($image_path){
-        $filename = $data->img_path->getClientOriginalName();
-        $filePath = $data->img_path->storeAs('products', $filename, 'public');
-        $data->img_path = '/storage/' . $filePath;
+
+        if ($image_path) {
+            $original = $image_path->getClientOriginalName();
+            $name = date('YmdHis') . '' . $original;
+            // public ディスクの image ディレクトリに保存
+            $image_path->storeAs('public/image', $name);
+            // モデルの img_path に正しいパスを保存
+            $this->img_path = 'storage/image/' . $name;
         }
         $this->save();
     }
+
+
+    // public function upload(Request $request ,$data,$image_path)
+    // {
+    // // ディレクトリ名
+    // $data = 'sample';
+
+    // // アップロードされたファイル名を取得
+    // $image_path = $request->file('image_path')->getClientOriginalName();
+
+    // // 取得したファイル名で保存
+    // $request->file('image_path')->storeAs('public/' . $data, $image_path);
+
+    // // ファイル情報をDBに保存
+    // $image = new Image();
+    // $image->name = $image_path;
+    // $image->path = 'storage/' . $data . '/' . $image_path;
+    // $image->save();
+
+    // return redirect('/');
+    // }
+
 
 
     public function show($id)

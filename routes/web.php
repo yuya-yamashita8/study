@@ -32,9 +32,4 @@ Route::post('/edit{id}', [App\Http\Controllers\ProductController::class, 'edit']
 Route::post('/update{id}', [App\Http\Controllers\ProductController::class, 'update'])->name('update');
 Route::get('/destroy', [App\Http\Controllers\ProductController::class, 'destroy'])->name('destroy');
 Route::delete('/destroy{id}', [App\Http\Controllers\ProductController::class, 'destroy'])->name('destroy');
-
-//Route::get('/regist',[App\Http\Controllers\ProductController::class, 'showRegistForm'])->name('regist')
-//Route::post('/regist',[App\Http\Controllers\ProductController::class, 'registSubmit'])->name('submit');
-//Route::get('/serch',[App\Http\Controllers\ProductController::class, 'serch'])->name('serch');
-
-//route
+Route::get('/search', [App\Http\Controllers\ProductController::class, 'index'])->name('index');
