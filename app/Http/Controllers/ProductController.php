@@ -9,6 +9,7 @@ use App\Models\Sale;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ProductRequest;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
 
 
 class ProductController extends Controller
@@ -22,6 +23,7 @@ class ProductController extends Controller
         $companies_model = new Company();
         $products = $product_model->index();
         $companies = $companies_model->index();
+
 
         return view('product.index', ['products' => $products, 'companies' => $companies]);
     }
@@ -118,13 +120,14 @@ class ProductController extends Controller
             // 登録処理呼び出し
             $product_model = new Product();
             $product_model->updateData($id, $data, $image_path);
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
             return back();
         }
 
-        return redirect()->route('product.index')
+        return redirect()->route('index')
             ->with('success', 'Product updated successfully');
     }
 
@@ -149,20 +152,23 @@ class ProductController extends Controller
     return redirect(route('index'));
 }
 
+
 public function search(Request $request)
 {
-    $query = $request->input('query');
-        $keyword = $request->input('keyword');
+    // キーワードと検索対象のメーカーIDを取得
+    $keyword = $request->input('keyword');
+    $searchCompany = $request->input('company_id');
 
-        // データベースから検索
-        $companies = Company::when($query, function ($queryBuilder) use ($query) {
-            return $queryBuilder->where('company_name', 'like', '%' . $query . '%');
-        })
-        ->when($keyword, function ($queryBuilder) use ($keyword) {
-            return $queryBuilder->where('description', 'like', '%' . $keyword . '%');
-        })
-        ->get();
+    // Product モデルのインスタンスを作成
+    $products = new Product();
+    $companies = new Company();
 
-        return view('index', ['companies' => $companies, 'query' => $query, 'keyword' => $keyword]);
-    }
+    // インスタンスを介して検索メソッドを呼び出し
+    $products = (new Product())->search($keyword, $searchCompany);
+    $companies = Company::all();
+
+    // ビューに検索結果を渡す
+    return view('product.index', ['products' => $products, 'keyword' => $keyword, 'searchCompany' => $searchCompany, 'companies' => $companies]);
+}
+
 }

@@ -26,9 +26,9 @@
         <dd class="col-sm-9">{{ $product->comment }}</dd>
 
         <dt class="col-sm-3">商品画像</dt>
-        <dd class="col-sm-9"><img src="{{ 'storage/image/' . $product->img_path }}" width="300"></dd>
+        <dd class="col-sm-9"><img src="{{ $product->img_path }}" width="300"></dd>
     </dl>
-    <a href="{{ route('product.edit', $product->id) }}" class="btn btn-primary btn-sm mx-1">編集</a>
+    <a href="{{ route('edit', $product->id) }}" class="btn btn-primary btn-sm mx-1">編集</a>
 
 </div>
 @endsection

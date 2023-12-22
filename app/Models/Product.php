@@ -116,17 +116,34 @@ class Product extends Model
 
 
     //データを渡すときはその順番を意識！
-    public function updateData($id, $data, $image_path)
-    {//インサートは新規登録の処理　whereはどのレコードをupdate（更新）してやるか！　
-    DB::table('products')->where('id','=',$id)->update([
-            'product_name' => $data->product_name,
-            'company_id' => $data->company_id,
-            'price' => $data->price,
-            'stock' => $data->stock,
-            'comment' => $data->comment,
-            'img_path' => $image_path,
-        ]);
+    public function updateData($id, $data, $image)
+{
+    DB::table('products')->where('id', '=', $id)->update([
+        'product_name' => $data['product_name'], // $data を配列としてアクセス
+        'company_id' => $data['company_id'],
+        'price' => $data['price'],
+        'stock' => $data['stock'],
+        'comment' => $data['comment'],
+    ]);
+
+    // 既存の商品データを取得
+    $product = $this->findOrFail($id);
+
+    // 既存の画像を削除
+    if ($product->img_path) {
+        Storage::delete($product->img_path);
     }
+
+    // 新しい画像を保存
+    if ($image) {
+        $path = $image->store('public/images');
+        $data['img_path'] = str_replace('public/', 'storage/', $path);
+    }
+
+    // 商品データを更新
+    $product->update($data);
+}
+
     //素のSQLに近いのがクエリビルダ
     //【'id','=',$id 】のように = でやると一致するもの
     //=>〇〇はbladeのnameを持ってくる。
@@ -149,4 +166,24 @@ class Product extends Model
         return $products;
         //一件はfirst、２件以上はget。
     }
+
+    public function search($keyword, $searchCompany)
+{
+    // products テーブルと companies テーブルを join
+    $query = DB::table('products')
+        ->join('companies', 'products.company_id', '=', 'companies.id')
+        ->select('products.*', 'companies.company_name');
+
+    if ($keyword) {
+        $query->where('products.product_name', 'like', "%{$keyword}%");
+    }
+
+    if ($searchCompany) {
+        $query->where('products.company_id', '=', $searchCompany);
+    }
+
+    // 検索結果を取得して返す
+    return $query->paginate(10);
 }
+
+    }

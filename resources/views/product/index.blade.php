@@ -5,28 +5,22 @@
     <h1 class="mb-4">商品一覧画面</h1>
 
     <div class="search mt-5">
-        <form action="{{ route('index') }}" method="get" class="row g-3">
-            <!-- 検索フォーム -->
-            <input type="text" name="query" placeholder="会社名を検索" value="{{ $query ?? '' }}">
-            <input type="text" name="keyword" placeholder="キーワードを検索" value="{{ $keyword ?? '' }}">
-            <button type="submit" style="width: 100px;">検索</button>
-        </form>
+    <form action="{{ route('search') }}" method="get" class="row g-3">
+    <!-- 検索フォーム -->
+    <input type="text" name="keyword" placeholder="キーワードを検索" value="{{ $keyword ?? '' }}">
+    <select class="form-select" id="company_id" name="company_id" placeholder="会社名を検索">
+        <option value="">メーカー名</option>
+        @foreach($companies as $company)
+            <option value="{{ $company->id }}">{{ $company->company_name }}</option>
+        @endforeach
+    </select>
+    <button type="submit" style="width: 100px;">検索</button>
+</form>
 
-        <!-- 検索結果表示 -->
-        <!-- @if ($companies->count() > 0)
-            <ul>
-                @foreach ($companies as $company)
-                    <li>{{ $company->company_name }}</li>
-                @endforeach
-            </ul>
-        @else
-            <p>該当する結果はありません。</p>
-        @endif -->
+        <a href="{{ route('create') }}" class="btn btn-primary mb-3">新規登録</a>
     </div>
 </div>
 
-
-    <a href="{{ route('create') }}" class="btn btn-primary mb-3">新規登録</a>
 
     <div class="products mt-5">
         <h2>商品情報</h2>
@@ -45,7 +39,7 @@
     @foreach ($products as $product)
         <tr>
             <td>{{ $product->id }}</td>
-            <td><img src="{{ asset('storage/image/'.$product->img_path) }}" alt="商品画像" width="100"></td>
+            <td><img src="{{ asset($product->img_path) }}" alt="商品画像" width="100"></td>
             <td>{{ $product->product_name }}</td>
             <td>{{ $product->price }}</td>
             <td>{{ $product->stock }}</td>
@@ -65,7 +59,7 @@
     </tbody>
     </table>
     </div>
-
+    {{ $products->appends(request()->query())->links() }}
 </div>
 
 
