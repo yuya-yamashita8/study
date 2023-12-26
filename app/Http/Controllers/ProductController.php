@@ -5,12 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Company;
-use App\Models\Sale;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ProductRequest;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Schema;
-
 
 class ProductController extends Controller
 {
@@ -48,51 +44,11 @@ class ProductController extends Controller
         $product_model->store($data, $image_path);
         return redirect()->route('index');}
 
-
-    //新規商品登録画面の保存
-    // public function store(ProductRequest $request)
-    // {
-    //         $data = $request -> all();
-    //         $image_path = $request->file('img_path');
-    //         //$product = new Product();
-    //         //$product->store($data,$image_path);
-
-    //         DB::beginTransaction();
-
-    //     try {
-    //         // 登録処理呼び出し
-    //         $product_model = new Product();
-    //         $product_model->store($data,$image_path);
-    //         DB::commit();
-    //         return redirect()->route('index');
-    //     } catch (\Exception $e) {
-    //         return redirect()->route('index');
-    //     }
-    // }
-
-    // public function upload(Request $request)
-    // {
-    //     $data = $request -> all();
-    //         $image_path = $request->file('image_path');
-    //         DB::beginTransaction();
-
-    //     try {
-    //         // 登録処理呼び出し
-    //         $product_model = new Product();
-    //         $product_model->storeAs($data, $image_path);;
-    //         DB::commit();
-    //         return redirect()->route('index');
-    //     } catch (\Exception $e) {
-    //         return redirect()->route('index');
-    //     }
-    // }
-
-
     //商品詳細画面
     public function show($id)
     {
         $product_model = new Product();
-        $product = $product_model->detail($id);//<-なぜshow($id)じゃないの？
+        $product = $product_model->detail($id);
         return view('product.show', ['product' => $product]);
     }
 
@@ -102,7 +58,7 @@ class ProductController extends Controller
     {
         $product_model = new Product();
         $company_model = new Company();
-        $product = $product_model->detail($id);//<-なぜedit($id)じゃないの？
+        $product = $product_model->detail($id);
         $companies = $company_model->index();
 
         return view('product.edit', ['product' => $product, 'companies' => $companies]);
