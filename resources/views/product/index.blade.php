@@ -5,7 +5,7 @@
     <h1 class="mb-4">商品一覧画面</h1>
 
     <div class="search mt-5">
-    <form action="{{ route('search') }}" method="get" class="row g-3">
+    <form action="{{ route('search') }}" method="get" class="row g-3" id="search_form">
     <!-- 検索フォーム -->
     <input type="text" name="keyword" placeholder="キーワードを検索" value="{{ $keyword ?? '' }}">
     <select class="form-select" id="company_id" name="company_id" placeholder="会社名を検索">
@@ -14,6 +14,10 @@
             <option value="{{ $company->id }}">{{ $company->company_name }}</option>
         @endforeach
     </select>
+    <input type="number" name="min_price" class="form-control" placeholder="最小価格" value="{{ request('min_price') }}">
+    <input type="number" name="max_price" class="form-control" placeholder="最大価格" value="{{ request('max_price') }}">
+    <input type="number" name="min_stock" class="form-control" placeholder="最小在庫" value="{{ request('min_stock') }}">
+    <input type="number" name="max_stock" class="form-control" placeholder="最大在庫" value="{{ request('max_stock') }}">
     <button type="submit" style="width: 100px;">検索</button>
 </form>
 
@@ -22,7 +26,7 @@
 </div>
 
 
-    <div class="products mt-5">
+    <div class="products mt-5" id="products-container">
         <h2>商品情報</h2>
         <table class="table table-striped">
     <thead>
@@ -30,8 +34,14 @@
             <th>ID</th>
             <th>商品画像</th>
             <th>商品名</th>
-            <th>価格</th>
-            <th>在庫数</th>
+            <th>価格
+            <a href="{{ request()->fullUrlWithQuery(['sort' => 'price', 'direction' => 'asc']) }}">↑</a>
+            <a href="{{ request()->fullUrlWithQuery(['sort' => 'price', 'direction' => 'desc']) }}">↓</a>
+            </th>
+            <th>在庫数
+            <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'direction' => 'asc']) }}">↑</a>
+            <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'direction' => 'desc']) }}">↓</a>
+            </th>
             <th>メーカー名</th>
         </tr>
     </thead>
@@ -47,7 +57,7 @@
 
                     <td>
                     <a href="{{ route('show', $product->id) }}" class="btn btn-info btn-sm mx-1">詳細</a>
-                        <form method="POST" action="{{ route('destroy', $product->id) }}" class="d-inline">
+                        <form method="POST" action="{{ route('destroy', $product->id) }}" class="d-inline" id="delete_btn">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm mx-1">削除</button>
@@ -61,6 +71,10 @@
     </div>
     {{ $products->appends(request()->query())->links() }}
 </div>
-
+<script>
+    var searchRoute = "{{ route('search') }}";
+</script>
+<script type="text/javascript" src="search.js"></script>
+<script type="text/javascript" src="destroy.js"></script>
 @endsection
 

@@ -74,29 +74,6 @@ class Product extends Model
         $this->save();
     }
 
-
-    // public function upload(Request $request ,$data,$image_path)
-    // {
-    // // ディレクトリ名
-    // $data = 'sample';
-
-    // // アップロードされたファイル名を取得
-    // $image_path = $request->file('image_path')->getClientOriginalName();
-
-    // // 取得したファイル名で保存
-    // $request->file('image_path')->storeAs('public/' . $data, $image_path);
-
-    // // ファイル情報をDBに保存
-    // $image = new Image();
-    // $image->name = $image_path;
-    // $image->path = 'storage/' . $data . '/' . $image_path;
-    // $image->save();
-
-    // return redirect('/');
-    // }
-
-
-
     public function show($id)
     {
         $product = DB::table('products')->create();
@@ -167,7 +144,7 @@ class Product extends Model
         //一件はfirst、２件以上はget。
     }
 
-    public function search($keyword, $searchCompany)
+    public function search($keyword, $searchCompany, $request)
 {
     // products テーブルと companies テーブルを join
     $query = DB::table('products')
@@ -182,8 +159,37 @@ class Product extends Model
         $query->where('products.company_id', '=', $searchCompany);
     }
 
+    // 最小価格が指定されている場合、その価格以上の商品をクエリに追加
+    if($min_price = $request->min_price){
+        $query->where('products.price', '>=', $min_price);
+    }
+
+    // 最大価格が指定されている場合、その価格以下の商品をクエリに追加
+    if($max_price = $request->max_price){
+        $query->where('products.price', '<=', $max_price);
+    }
+
+    // 最小在庫数が指定されている場合、その在庫数以上の商品をクエリに追加
+    if($min_stock = $request->min_stock){
+        $query->where('products.stock', '>=', $min_stock);
+    }
+
+    // 最大在庫数が指定されている場合、その在庫数以下の商品をクエリに追加
+    if($max_stock = $request->max_stock){
+        $query->where('products.stock', '<=', $max_stock);
+    }
+
+    // ソートのパラメータが指定されている場合、そのカラムでソートを行う
+    if($sort = $request->sort){
+        $direction = $request->direction == 'desc' ? 'desc' : 'asc';
+    // もし $request->direction の値が 'desc' であれば、'desc' を返す。
+    // そうでなければ'asc' を返す
+        $query->orderBy($sort, $direction);
+    // orderBy('カラム名', '並び順')
+    }
+
     // 検索結果を取得して返す
-    return $query->paginate(10);
+    return $query->paginate(5);
 }
 
     }

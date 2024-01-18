@@ -32,5 +32,6 @@ Route::post('/edit{id}', [App\Http\Controllers\ProductController::class, 'edit']
 Route::post('/update{id}', [App\Http\Controllers\ProductController::class, 'update'])->name('update');
 Route::get('/destroy', [App\Http\Controllers\ProductController::class, 'destroy'])->name('destroy');
 Route::delete('/destroy{id}', [App\Http\Controllers\ProductController::class, 'destroy'])->name('destroy');
+Route::post('/destroy/{id}', 'ProductController@destroy'); /* レコード削除 */
 Route::get('/search', [App\Http\Controllers\ProductController::class, 'search'])->name('search');
 

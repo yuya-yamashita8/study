@@ -120,11 +120,44 @@ public function search(Request $request)
     $companies = new Company();
 
     // インスタンスを介して検索メソッドを呼び出し
-    $products = (new Product())->search($keyword, $searchCompany);
+    $products = (new Product())->search($keyword, $searchCompany, $request);
     $companies = Company::all();
 
+    if ($request->ajax()) {
+        // Ajaxリクエストの場合、商品情報のみを返す
+        return view('product.index', ['products' => $products])->render();
+    } else {
+        // 通常のHTTPリクエストの場合、JSONレスポンスを返す
+        return response()->json(['products' => $products, 'keyword' => $keyword, 'searchCompany' => $searchCompany, 'companies' => $companies]);
+    }
+
+    // // レスポンスをJSONで返す
+    // return response()->json([
+    //     'products' => $products,
+    //     'keyword' => $keyword,
+    //     'searchCompany' => $searchCompany,
+    //     'companies' => $companies,
+    // ]);
+
     // ビューに検索結果を渡す
-    return view('product.index', ['products' => $products, 'keyword' => $keyword, 'searchCompany' => $searchCompany, 'companies' => $companies]);
+    // return view('product.index', ['products' => $products, 'keyword' => $keyword, 'searchCompany' => $searchCompany, 'companies' => $companies]);
 }
+
+
+// public function searchAsync(Request $request)
+// {
+//     $keyword = $request->input('keyword');
+//     $searchCompany = $request->input('company_id');
+
+//     $products = (new Product())->search($keyword, $searchCompany, $request);
+//     $companies = Company::all();
+
+//     return response()->json([
+//         'products' => $products,
+//         'keyword' => $keyword,
+//         'searchCompany' => $searchCompany,
+//         'companies' => $companies,
+//     ]);
+// }
 
 }
