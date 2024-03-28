@@ -19,11 +19,6 @@ $('#search_btn').on('click', function (e) {
         var max_stock = $("#search_form input[name='max_stock']").val();
 
     // ガード節: キーワードが空の場合は処理を中断
-    // if (!keyword) {
-    //     return false;
-    // }
-
-    //assetっていうのはpublicフォルダーを起点に参照にします
 
     // Ajaxリクエストを発行
     $.ajax({
@@ -55,9 +50,4 @@ $('#search_btn').on('click', function (e) {
     .fail(function () {
         alert('検索に失敗しました。');
     })
-    // .always(function () {
-    //     // 通信の成功と失敗に関わらず実行される処理
-    //     // 例: ローディング非表示にする処理もここに記載
-    //     // $('.loading').addClass('display-none');
-    // });
 });

@@ -15,8 +15,6 @@ class SalesController extends Controller
         $quantity = $request->input('quantity');
         $product = Product::find($productId);
 
-        // return response()->json($product);
-
         DB::beginTransaction();
 
         try {
