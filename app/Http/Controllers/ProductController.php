@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Company;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ProductRequest;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -36,6 +37,7 @@ class ProductController extends Controller
         return view('product.create', ['companies' => $companies]);
     }
 
+    //新規商品登録
     public function store(ProductRequest $request) {
         $data = $request->all();
         $image_path = $request->file('img_path');
@@ -43,6 +45,7 @@ class ProductController extends Controller
         $product_model = new Product();
         $product_model->store($data, $image_path);
         return redirect()->route('index');}
+
 
     //商品詳細画面
     public function show($id)
@@ -89,32 +92,38 @@ class ProductController extends Controller
 
 
     //商品を削除
-    public function destroy($id)
-    {
-        // トランザクション開始
-    DB::beginTransaction();
-
-    try {
-        // 登録処理呼び出し
-        $product_model = new Product();
-        $product_model->deleteProduct($id);
-        DB::commit();
-    } catch (\Exception $e) {
-        DB::rollback();
-        return back();
+    public function destroy(Request $request, Product $product) {
+        $product = Product::findOrFail($request->id);
+        $product->delete();
+        // // 処理が完了したらdestroyにリダイレクト
+        // return redirect(route('index'));
     }
+//     public function destroy($id)
+//     {
+//         // トランザクション開始
+//     DB::beginTransaction();
 
-    // 処理が完了したらdestroyにリダイレクト
-    return redirect(route('index'));
-}
+//     try {
+//         // 登録処理呼び出し
+//         $product_model = new Product();
+//         $product_model->deleteProduct($id);
+//         DB::commit();
+//     } catch (\Exception $e) {
+//         DB::rollback();
+//         return back();
+//     }
+
+//     // 処理が完了したらdestroyにリダイレクト
+//     return redirect(route('index'));
+// }
 
 
 public function search(Request $request)
-{
+{Log::info('処理開始');
     // キーワードと検索対象のメーカーIDを取得
     $keyword = $request->input('keyword');
     $searchCompany = $request->input('company_id');
-
+    Log::info($searchCompany);
     // Product モデルのインスタンスを作成
     $products = new Product();
     $companies = new Company();
@@ -123,14 +132,14 @@ public function search(Request $request)
     $products = (new Product())->search($keyword, $searchCompany, $request);
     $companies = Company::all();
 
-    if ($request->ajax()) {
-        // Ajaxリクエストの場合、商品情報のみを返す
-        return view('product.index', ['products' => $products])->render();
-    } else {
-        // 通常のHTTPリクエストの場合、JSONレスポンスを返す
-        return response()->json(['products' => $products, 'keyword' => $keyword, 'searchCompany' => $searchCompany, 'companies' => $companies]);
-    }
-
+    // if ($request->ajax()) {
+    //     // Ajaxリクエストの場合、商品情報のみを返す
+    //     return response()->json(['products' => $products, 'keyword' => $keyword, 'searchCompany' => $searchCompany, 'companies' => $companies]);
+    // } else {
+    //     // 通常のHTTPリクエストの場合、JSONレスポンスを返す
+    //     return view('product.index', ['products' => $products])->render();
+    // }
+    return view('product.index', ['products' => $products , 'companies' => $companies ,'keyword' => $keyword, 'searchCompany' => $searchCompany])->render();
     // // レスポンスをJSONで返す
     // return response()->json([
     //     'products' => $products,
@@ -142,22 +151,5 @@ public function search(Request $request)
     // ビューに検索結果を渡す
     // return view('product.index', ['products' => $products, 'keyword' => $keyword, 'searchCompany' => $searchCompany, 'companies' => $companies]);
 }
-
-
-// public function searchAsync(Request $request)
-// {
-//     $keyword = $request->input('keyword');
-//     $searchCompany = $request->input('company_id');
-
-//     $products = (new Product())->search($keyword, $searchCompany, $request);
-//     $companies = Company::all();
-
-//     return response()->json([
-//         'products' => $products,
-//         'keyword' => $keyword,
-//         'searchCompany' => $searchCompany,
-//         'companies' => $companies,
-//     ]);
-// }
 
 }

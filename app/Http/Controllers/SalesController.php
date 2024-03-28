@@ -9,29 +9,40 @@ use Illuminate\Support\Facades\DB;
 
 class SalesController extends Controller
 {
-    public function purchase(Request $request) {
-        // リクエストから必要なデータを取得する
+    public function purchase(Request $request)
+    {
         $productId = $request->input('product_id');
-        $quantity = $request->input('quantity', 1);
+        $quantity = $request->input('quantity');
+        $product = Product::find($productId);
 
-        // Product モデルのインスタンスを作成
-        $product = new Product();
+        // return response()->json($product);
 
-        // インスタンスを介して検索メソッドを呼び出し
-        $productResult = $product->purchase($productId, $quantity);
+        DB::beginTransaction();
 
-        // Sale モデルのインスタンスを作成
-        $sale = new Sale();
+        try {
+            if ($product && $product->stock >= $quantity) {
+                //在庫がある場合
+                $product->stock -= $quantity;
+                $product->save();
+                //売上の記録
+                $sale = new Sale();
+                $sale->product_id = $productId;
+                // $sale->quantity = $quantity;
+                $sale->save();
 
-        // Sale モデルの全てのデータを取得
-        $salesResult = $sale->all();
+                DB::commit();
 
-        return response()->json([
-            'message' => '購入成功',
-            'product' => $productResult,
-            'sales' => $salesResult,
-        ]);
+                return response()->json(['message' => config('messages.purchase')], 200);
+            } else {
+                //在庫が不足している場合
+                DB::rollBack();
+                return response()->json(['message' => config('messages.purchase_0')], 400);
+            }
+        } catch (\Exception $e) {
+            //例外が発生した場合
+            DB::rollBack();
+
+            return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
+        }
     }
-
 }
-

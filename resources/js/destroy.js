@@ -1,36 +1,50 @@
-// ここから非同期処理の記述
-$(function() {
+console.log('削除押したら');
 
-    //削除ボタンに"btn-danger"クラスを設定しているため、ボタンが押された場合に開始されます
-                $('.btn-danger').on('click', function() {
-                var deleteConfirm = confirm('削除してよろしいでしょうか？');
-   //　メッセージをOKした時（true)の場合、次に進みます
-                    if(deleteConfirm == true) {
-                        var clickEle = $(this)
-   //$(this)は自身（今回は押されたボタンのinputタグ)を参照します
-   //　"clickEle"に対して、inputタグの設定が全て代入されます
+$(document).ready(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 
-                        var userID = clickEle.attr('data-user_id');
-    //attr()」は、HTML要素の属性を取得したり設定することができるメソッドです
-    //今回はinputタグの"data-user_id"という属性の値を取得します
-    //"data-user_id"にはレコードの"id"が設定されているので
-    // 削除するレコードを指定するためのidの値をここで取得します
+    //404エラー　相対パスと絶対パスが違う
+    //スラッシュがあるとローカルホストにくっつく
+    //404が出たらURL設定を見直したら良い
 
-    // .ajaxメソッドでルーティングを通じて、コントローラへ非同期通信を行います。
-   //見本ではレコードを削除するコントローラへ通信を送るためにはweb.phpを参照すると
-   //通信方法は"post"に設定し、URL（送信先）を'/destroy/{id}'にする必要があります
+    //e.preventDefault()-▶︎他のイベントが動くのを止める。
+    //function(e)があるからe.preventDefault()使える。
 
-                $.ajax({
-                    type: 'POST',
-                    url: '/destroy/'+userID, //userID にはレコードのIDが代入されています
-                    dataType: 'json',
-                    data: {'id':userID},
-                            })
-   //”削除しても良いですか”のメッセージで”いいえ”を選択すると次に進み処理がキャンセルされます
-            } else {
-                    (function(e) {
-                        e.preventDefault()
-                    });
-            };
-        });
+    //405エラー　web.phpが合ってない　ルート設定のエラー　メソッドが合ってないよ
+
+    //500エラー（サーバーエラー）　サーバー側の処理
+    //lalavel.logを確認して！！
+
+    //419エラー　X-CSRF-TOKEN　が上手くで来ていない時に出やすい
+    //権限エラー
+
+    $('#deleteTarget').on('click', function(e) {
+        e.preventDefault();
+        var deleteConfirm = confirm('削除してよろしいでしょうか？');
+
+        if (deleteConfirm) {
+            var clickEle = $(this);
+            // 削除ボタンに埋め込まれたデータ属性を取得
+            var userID = clickEle.attr('data-user_id');
+
+            $.ajax({
+                url: 'destroy/' + userID, // 正しいURLを生成
+                type: 'POST',
+                data: {'id': userID, '_method': 'DELETE'}, // DELETE メソッドを指定
+            })
+            .done(function() {
+                // 通信が成功した場合、クリックした要素の親要素の <tr> を削除
+                clickEle.parents('tr').remove();
+            })
+            .fail(function() {
+                alert('削除に失敗しました。');
+            });
+        } else {
+            // キャンセルされた場合の処理
+        }
+    });
 });

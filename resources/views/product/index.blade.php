@@ -14,11 +14,13 @@
             <option value="{{ $company->id }}">{{ $company->company_name }}</option>
         @endforeach
     </select>
+    <div id='form_price'>
     <input type="number" name="min_price" class="form-control" placeholder="最小価格" value="{{ request('min_price') }}">
     <input type="number" name="max_price" class="form-control" placeholder="最大価格" value="{{ request('max_price') }}">
     <input type="number" name="min_stock" class="form-control" placeholder="最小在庫" value="{{ request('min_stock') }}">
     <input type="number" name="max_stock" class="form-control" placeholder="最大在庫" value="{{ request('max_stock') }}">
-    <button type="submit" style="width: 100px;">検索</button>
+    </div>
+    <button id='search_btn' type="submit" style="width: 100px;">検索</button>
 </form>
 
         <a href="{{ route('create') }}" class="btn btn-primary mb-3">新規登録</a>
@@ -28,7 +30,8 @@
 
     <div class="products mt-5" id="products-container">
         <h2>商品情報</h2>
-        <table class="table table-striped">
+        <div class ="table class" id='table_table'>
+        <table class="table table-striped tablesorter">
     <thead>
         <tr>
             <th>ID</th>
@@ -57,10 +60,13 @@
 
                     <td>
                     <a href="{{ route('show', $product->id) }}" class="btn btn-info btn-sm mx-1">詳細</a>
-                        <form method="POST" action="{{ route('destroy', $product->id) }}" class="d-inline" id="delete_btn">
+                        <!-- <form method="POST" action="{{ route('destroy', $product->id) }}" class="d-inline" id="delete_btn" onsubmit="event.preventDefault(); confirmDelete(this);">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm mx-1">削除</button>
+                            <button id='deleteTarget' type="submit" class="btn btn-danger btn-sm mx-1">削除</button>
+                        </form> -->
+                        <form  class="id">
+                        <input id="deleteTarget" data-user_id="{{$product->id}}" type="submit" class="btn btn-danger btn-sm mx-1" value="削除">
                         </form>
                     </td>
                 </tr>
@@ -68,13 +74,9 @@
     @endforeach
     </tbody>
     </table>
-    </div>
     {{ $products->appends(request()->query())->links() }}
+    </div>
+    </div>
 </div>
-<script>
-    var searchRoute = "{{ route('search') }}";
-</script>
-<script type="text/javascript" src="search.js"></script>
-<script type="text/javascript" src="destroy.js"></script>
 @endsection
 

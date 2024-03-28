@@ -125,12 +125,12 @@ class Product extends Model
     //【'id','=',$id 】のように = でやると一致するもの
     //=>〇〇はbladeのnameを持ってくる。
 
-
     //削除処理
-    public function deleteProduct($id)
-    {
-        return $this->destroy($id);
-    }
+    // public function deleteProduct($id)
+    // {
+    //     return $this->destroy($id);
+    // }
+
 
     public function  detail($id)
     {
